@@ -1,93 +1,36 @@
-// import logo from './logo.svg';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import './App.css';
 import {Excalidraw} from '@excalidraw/excalidraw';
 
 function App() {
   const rectangleRef = useRef(null);
-  // const excalidrawRef = useRef(null);
-  const [elements, setElements] = useState([]);
+  const [showAnimations, setShowAnimations] = useState(false);
 
-  // const handlePointerOver = useCallback(
-  //   (event) => {
-  //     const rectElement = elements.find(el => el.type === 'rectangle');
-  //     if (rectElement) {
-  //       gsap.to(`#${rectElement.id}`, { duration: 1, x: 100, fill: '#ff0000' });
-  //       setElements(elements.map(el => el.id === rectElement.id ? { ...rectElement, x: rectElement.x + 100 } : el));
-  //     }
-  //   },
-  //   [elements]
-  // );
-  // useEffect(()=>{
-  //   // const onPointerOver = (event) => {
-  //   //   const { pointerType, target } = event;
-  //   //   if (pointerType === 'mouse' && target.tagName === 'svg' && elements.length > 0) {
-  //   //     const rectElement = elements.find(el => el.type === 'rectangle');
-  //   //     if (rectElement) {
-  //   //       gsap.to(rectElement, { duration: 1, fill: '#ff0000', x: rectElement.x + 100 });
-  //   //       setElements(elements.map(el => el.id === rectElement.id ? { ...rectElement, x: rectElement.x + 100, fill: '#ff0000' } : el));
-  //   //     }
-  //   //   }
-  //   // };
-  //   // if (excalidrawRef.current != null) {
-  //     const svgContainer = excalidrawRef.current?.shadowRoot.querySelector('svg');
-  //     if (svgContainer) {
-  //       svgContainer.addEventListener('pointerover', handlePointerOver);
-  //     }
-  
-  //     return () => {
-  //       if (svgContainer) {
-  //         svgContainer.removeEventListener('pointerover', handlePointerOver);
-  //       }
-  //     };
-  //   // }
-  // },[])
-  // useEffect(()=>{
-  //   const rectElement = elements.find(el => el.type === 'rectangle');
-  //   if (rectElement) {
-  //     gsap.to(rectElement.id, { duration: 1, x: 100, fill: '#ff0000' });
-  //   }
-    
-  //   console.log(rectElement);
-  // },[elements])
-  // useEffect(() => {
-  //   const handlePointerOver = (event) => {
-  //     const target = event.target.closest('g[data-id]');
-  //     if (target) {
-  //       gsap.to(target, { duration: 1, x: 100, fill: '#ff0000' });
-  //     }
-  //   };
-  //   const excalidrawDiv = excalidrawRef.current;
-  //   alert(excalidrawDiv)
-  //   if (excalidrawDiv) {
-  //     const svg = excalidrawDiv.querySelector('svg');
-  //     if (svg) {
-  //       svg.addEventListener('pointerover', handlePointerOver);
-  //     }
-  //   }
+  //create some animations for showing a list of them when clicking "Show Animations" button and apply each animation to a object.
+  const animations = [
+    { id: 'moveRight', name: 'Move Right', animation: el => gsap.to(el, { x: '+=100', duration: 1 }) },
+    { id: 'scaleUp', name: 'Scale Up', animation: el => gsap.to(el, { scale: 1.5, duration: 1 }) },
+    { id: 'scaleDown', name: 'Scale Down', animation: el => gsap.to(el, { scale: 0.5, duration: 1 }) },
+    { id: 'rotateRightToLeft', name: 'Rotate Right To Left', animation: el => gsap.to(el, { rotation: 360, duration: 1 }) },
+    { id: 'rotateLeftToRight', name: 'Rotate Left To Right', animation: el => gsap.to(el, { rotation: -360, duration: 1 }) },
+    { id: 'moveLeft', name: 'Move Left', animation: el => gsap.to(el, { x: '-=100', duration: 1 }) },
+  ];
 
-  //   return () => {
-  //     if (excalidrawDiv) {
-  //       const svg = excalidrawDiv.querySelector('svg');
-  //       if (svg) {
-  //         svg.removeEventListener('pointerover', handlePointerOver);
-  //       }
-  //     }
-  //   };
-  // }, []);
-  
-  const handlePointerOver = (event) => {
-    const targetId = event.target.getAttribute('data-id');
-    const targetElement = elements.find(el => el.id === targetId);
-    if (targetElement && targetElement.type === 'rectangle') {
-      gsap.to(`#${targetId}`, { duration: 1, x: targetElement.x + 100, fill: '#ff0000' });
-      setElements(elements.map(el => el.id === targetId ? { ...el, x: el.x + 100 } : el));
+  //apply each animations to a object if user selected that animation.
+  const applyAnimation = (selectedAnimation) => {
+    if (!selectedAnimation) return;
+    console.log(selectedAnimation);
+    const element = document.querySelector('div.Stack.Stack_vertical.App-menu_top__left');
+    console.log(element);
+    if (element) {
+      selectedAnimation.animation(element);
     }
   };
+
+  //mouseover and mouseout events for library object of excalidraw
   useEffect(()=>{
     setTimeout(()=>{
-      // const element = document.querySelector('div.layer-ui__wrapper__top-right.zen-mode-transition');
       const element = document.querySelector('div.sidebar-trigger.default-sidebar-trigger');
       element.addEventListener('mouseover', ()=>{
         gsap.to(element, { duration: 1, x: -100 , y:20, backgroundColor: '#ff0000' })
@@ -98,10 +41,12 @@ function App() {
 
     },[300])
   },[])
+
+  //for mouse Hover over the button "Hover over me!" applying this event
   const handleMouseOver = () => {
     gsap.to(rectangleRef.current, { duration: 1, x: 100 , y:-20, backgroundColor: '#ff0000' });
   };
-
+  //for mouse out of the button "Hover over me!" applying this event
   const handleMouseOut = () => {
     gsap.to(rectangleRef.current, { duration: 1, x: 0, y:0, backgroundColor: '#00ff00' });
   };
@@ -117,15 +62,29 @@ function App() {
         Hover over me!
       </div>
 
+      <div className="toolbar">
+        <button onClick={() => setShowAnimations(!showAnimations)}>
+          Show Animations
+        </button>
+      </div>
       <div className="excalidraw-wrapper">
         <Excalidraw 
         />
       </div>
-      {/* <header className="App-header">
-        <p>
-          Excalidraw
-        </p>
-      </header> */}
+      {showAnimations && (
+        <div className="sidebar">
+          <h2>Animations</h2>
+          <ul>
+            {animations.map(animation => (
+              <li key={animation.id} onClick={() => {
+                applyAnimation(animation);
+              }}>
+                {animation.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
