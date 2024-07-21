@@ -62,3 +62,35 @@
 .sidebar li:hover {
   background: #f0f0f0;
 }
+
+.animation-sidebar {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0px 0px 0.9310142993927002px 0px rgba(0, 0, 0, 0.17),
+    0px 0px 3.1270833015441895px 0px rgba(0, 0, 0, 0.08),
+    0px 7px 14px 0px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  right: var(--editor-container-padding);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+  border-radius: 6px;
+}
+
+.animation-sidebar ul {
+  padding: 5px;
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.animation-sidebar ul li {
+  list-style: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.animation-sidebar ul li:hover {
+  background-color: lightgray;
+}
